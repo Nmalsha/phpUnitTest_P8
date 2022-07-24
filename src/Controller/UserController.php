@@ -38,7 +38,7 @@ class UserController extends AbstractController
             $password = $userPasswordHasher->hashPassword($user, $user->getPassword());
 
             $user->setPassword($password);
-
+            $user->setRoles(["ROLE_USER"]);
             $entityManager->persist($user);
             $entityManager->flush();
 

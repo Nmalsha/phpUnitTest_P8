@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %} {% form_theme formView
+'bootstrap_5_layout.html.twig' %} {% block title %}Connexion{% endblock %} {%
+block body %}
+<div class="container w-auto">
+  <h1>Connexion</h1>
+  {% if error %}
+  <div class="alert alert-success alert-dismissible" role="alert">
+    <button
+      type="button"
+      class="btn-close"
+      data-bs-dismiss="alert"
+      aria-label="Close"
+    ></button>
+    <div class="alert-message">
+      <div class="">
+        {{ error }}
+      </div>
+    </div>
+  </div>
+  {% endif %}
+  {{ form_start(formView) }}
+  {{ form_row(formView.email) }}
+  {{ form_row(formView.password) }}
+
+  <input
+    type="text"
+    name="_csrf_token"
+    value="{{ csrf_token('authenticate') }}"
+  />
+  <button type="submit" class="'btn btn-primary">Connexion</button>
+
+  >
+  {{ form_end(formView) }}
+</div>
+
+{% endblock %}
