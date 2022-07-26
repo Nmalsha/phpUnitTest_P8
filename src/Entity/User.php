@@ -48,7 +48,7 @@ class User implements UserInterface
     private $roles = [];
 
     /**
-     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="user")
+     * @ORM\OneToMany(targetEntity=Task::class, mappedBy="user", inversedBy: 'user')
      */
     private $task;
 
@@ -72,6 +72,10 @@ class User implements UserInterface
         $this->username = $username;
 
         return $this;
+    }
+    public function __toString()
+    {
+        return $this->username;
     }
 
     public function getPassword(): ?string
