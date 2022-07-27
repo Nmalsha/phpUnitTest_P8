@@ -1,0 +1,24 @@
+{% extends 'base.html.twig' %} {% form_theme form 'bootstrap_5_layout.html.twig'
+%} {% block title %} {% if app.request.attributes.get('_route')=='task_create'
+%} Créer une tâche {% endif %} {% endblock %} {% block body %}
+<div class="container w-auto">
+  <div class="row">
+    {% if app.request.attributes.get('_route')=='task_create' %}
+    {{ form_start(form, { action: path("task_create") }) }}
+
+    {% endif %}
+    {{ form_widget(form) }}
+
+    {% if app.request.attributes.get('_route')=='task_create' %}
+    <button type="submit" class="btn btn-success pull-right">Ajouter</button>
+
+    {% endif %}
+
+    {{ form_end(form) }}
+
+    <a href="{{ path('task_list') }}" class="btn btn-primary"
+      >Retour à la liste des tâches</a
+    >
+  </div>
+</div>
+{% endblock %}

@@ -1,7 +1,7 @@
 security:
-  #   encoders:
-  #   App\Entity\User:
-  #     algorithm: bcrypt
+  encoders:
+    App\Entity\User:
+      algorithm: bcrypt
 
   enable_authenticator_manager: true
   # https://symfony.com/doc/current/security.html#registering-the-user-hashing-passwords
@@ -14,14 +14,19 @@ security:
     app_user_provider:
       entity:
         class: App\Entity\User
-        property: username
+        property: email
   firewalls:
     dev:
       pattern: ^/(_(profiler|wdt)|css|images|js)/
       security: false
     main:
       lazy: true
-      provider: users_in_memory
+      provider: app_user_provider
+      custom_authenticator: App\Security\AppAuthenticator
+      logout:
+        path: app_logout
+        # where to redirect after logout
+        # target: app_any_route
       #    anonymous: ~
     #   form_login:
     #     login_path: login
@@ -38,8 +43,9 @@ security:
   # Easy way to control access for large sections of your site
   # Note: Only the *first* access control that matches will be used
   access_control:
-    # - { path: ^/admin, roles: ROLE_ADMIN }
-    - { path: ^/profile, roles: ROLE_USER }
+    - { path: ^/user, roles: [ROLE_ADMIN, IS_AUTHENTICATED_ANONYMOUSLY] }
+    - { path: ^/tasks, roles: [ROLE_USER, ROLE_ADMIN] }
+    #  - { path: ^/login, roles: ROLE_ADMIN, IS_AUTHENTICATED_ANONYMOUSLY }
 
 when@test:
   security:
