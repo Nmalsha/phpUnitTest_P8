@@ -38,7 +38,7 @@ class Task
     private $isDone;
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="task", inversedBy: 'task', cascade:['detach']))
+     * @ORM\ManyToOne(targetEntity=User::class)
      */
     private $user;
 

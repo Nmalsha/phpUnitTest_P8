@@ -37,23 +37,23 @@ class TaskController extends AbstractController
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            $task->setCreatedAt(new \DateTimeImmutable())
-                ->setIsDone(false);
+            // $task->setCreatedAt(new \DateTimeImmutable())
+            //     ->setIsDone(false);
 
-            if ($this->getUser()->getRoles()[0] == "ROLE_USER" || $this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
-                $task->setUser($this->getUser());
-            } elseif ($this->getuser()->getRoles()[0] == "ROLE_ANONYMOUS") {
-                $anonymous = $this->userRepository->findOneBy([
-                    'username' => 'Anonyme',
-                ]);
-                $task->setUser($anonymous);
-            }
-            dd($task);
-            $this->em->persist($task);
-            $this->em->flush();
+            // if ($this->getUser()->getRoles()[0] == "ROLE_USER" || $this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
+            //     $task->setUser($this->getUser());
+            // } elseif ($this->getuser()->getRoles()[0] == "ROLE_ANONYMOUS") {
+            //     $anonymous = $this->userRepository->findOneBy([
+            //         'username' => 'Anonyme',
+            //     ]);
+            //     $task->setUser($anonymous);
+            // }
+            // dd($task);
+            // $this->em->persist($task);
+            // $this->em->flush();
 
-            $this->addFlash('success', 'La tâche a été bien été ajoutée à la liste.');
-            return $this->redirectToRoute('task_list');
+            // $this->addFlash('success', 'La tâche a été bien été ajoutée à la liste.');
+            // return $this->redirectToRoute('task_list');
         }
         return $this->render('task/create_update.html.twig', [
             'form' => $form->createView()]);
