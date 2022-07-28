@@ -18,6 +18,7 @@ class UserController extends AbstractController
      */
     public function listAction()
     {
+
         return $this->render('user/list.html.twig', ['users' => $this->getDoctrine()->getRepository(User::class)->findAll()]);
     }
     /**
@@ -28,26 +29,34 @@ class UserController extends AbstractController
         EntityManagerInterface $entityManager,
         UserAuthenticatorInterface $userAuthenticator) {
 
+        // dd($this->getUser()->getRoles());
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            //encode the plain password
+            // dd($this->getUser()->getRoles()[0]);
+            if ($this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
 
-            $password = $userPasswordHasher->hashPassword($user, $user->getPassword());
+                //encode the plain password
 
-            $user->setPassword($password);
-            $user->setRoles(["ROLE_USER"]);
-            $entityManager->persist($user);
-            $entityManager->flush();
+                $password = $userPasswordHasher->hashPassword($user, $user->getPassword());
 
-            $this->addFlash('success', "L'utilisateur a bien été ajouté.");
+                $user->setPassword($password);
+                $user->setRoles($form->get('roles')->getData());
+                $entityManager->persist($user);
+                $entityManager->flush();
 
-            return $this->redirectToRoute('user_list');
+                $this->addFlash('success', "L'utilisateur a bien été ajouté.");
+
+                return $this->redirectToRoute('user_list');
+            } else {
+                $this->addFlash('error', "Vous n'avez pas le doit de realiser cet action");
+
+            }
+
         }
         return $this->render('user/create.html.twig', ['form' => $form->createView()]);
-
     }
 
     /**

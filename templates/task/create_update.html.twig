@@ -1,6 +1,15 @@
 {% extends 'base.html.twig' %} {% form_theme form 'bootstrap_5_layout.html.twig'
 %} {% block title %} {% if app.request.attributes.get('_route')=='task_create'
-%} Créer une tâche {% endif %} {% endblock %} {% block body %}
+%} Créer une tâche {% endif %} {% endblock %} {% block body %} {% for message in
+app.flashes('success') %}
+<div class="alert alert-success">
+  {{ message }}
+</div>
+{% endfor %} {% for message in app.flashes('error') %}
+<div class="alert alert-warning">
+  {{ message }}
+</div>
+{% endfor %}
 <div class="container w-auto">
   <div class="row">
     {% if app.request.attributes.get('_route')=='task_create' %}

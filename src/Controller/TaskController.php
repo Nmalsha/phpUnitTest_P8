@@ -32,28 +32,30 @@ class TaskController extends AbstractController
      */
     public function createAction(Request $request)
     {
+
         $task = new Task();
         $form = $this->createForm(TaskType::class, $task);
 
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
-            // $task->setCreatedAt(new \DateTimeImmutable())
-            //     ->setIsDone(false);
 
-            // if ($this->getUser()->getRoles()[0] == "ROLE_USER" || $this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
-            //     $task->setUser($this->getUser());
-            // } elseif ($this->getuser()->getRoles()[0] == "ROLE_ANONYMOUS") {
-            //     $anonymous = $this->userRepository->findOneBy([
-            //         'username' => 'Anonyme',
-            //     ]);
-            //     $task->setUser($anonymous);
-            // }
+            $task->setCreatedAt(new \DateTimeImmutable())
+                ->setIsDone(false);
+
+            if ($this->getUser()->getRoles()[0] == "ROLE_USER" || $this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
+                $task->setUser($this->getUser());
+            } elseif ($this->getuser()->getRoles()[0] == "ROLE_ANONYMOUS") {
+                $anonymous = $this->userRepository->findOneBy([
+                    'username' => 'Anonyme',
+                ]);
+                $task->setUser($anonymous);
+            }
             // dd($task);
-            // $this->em->persist($task);
-            // $this->em->flush();
+            $this->em->persist($task);
+            $this->em->flush();
 
-            // $this->addFlash('success', 'La tâche a été bien été ajoutée à la liste.');
-            // return $this->redirectToRoute('task_list');
+            $this->addFlash('success', 'La tâche a été bien été ajoutée à la liste.');
+            return $this->redirectToRoute('task_list');
         }
         return $this->render('task/create_update.html.twig', [
             'form' => $form->createView()]);
@@ -64,5 +66,47 @@ class TaskController extends AbstractController
     public function editTask(Request $request)
     {
 
+    }
+    /**
+     * @Route("/tasks/{id}/delete", name="delete")
+     */
+    public function deleteTask($id, Task $task)
+    {
+        //connected user id
+        $connectedUserId = $this->getUser()->getId();
+        //user id of the task owner
+        $taskOwnerId = $this->taskRepository->findOneBy(['id' => $id])->getUser()->getId();
+        if ($connectedUserId === $taskOwnerId) {
+            $tasks = $this->taskRepository->findOneBy(['id' => $id]);
+            $this->em->remove($tasks);
+            $this->em->flush();
+
+            $this->addflash(
+                'success',
+                "La tâche {$tasks->getTitle()} a été supprimé avec succès !"
+            );
+
+        } else {
+            $this->addFlash('error', "Vous n'avez pas le doit de suppromer le tache ");
+        }
+        return $this->redirectToRoute('task_list');
+    }
+    /**
+     * @Route("/tasks/{id}/toggle", name="toggle")
+     */
+    public function toggleTaskAction($id, Task $task)
+    {
+        $tasks = $this->taskRepository->findOneBy(['id' => $id]);
+
+        if ($tasks->isIsDone() === false) {
+            $tasks->setIsDone(true);
+        } elseif ($tasks->isIsDone() === true) {
+            $tasks->setIsDone(false);
+        }
+        $this->em->flush();
+
+        $this->addFlash('success', "Tâche mise à jour");
+
+        return $this->redirectToRoute('task_list');
     }
 }

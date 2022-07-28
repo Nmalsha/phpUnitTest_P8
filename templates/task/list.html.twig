@@ -1,5 +1,13 @@
 {% extends 'base.html.twig' %} {% block title %}Votre ToDo{% endblock %} {%
-block body %}
+block body %} {% for message in app.flashes('success') %}
+<div class="alert alert-success">
+  {{ message }}
+</div>
+{% endfor %} {% for message in app.flashes('error') %}
+<div class="alert alert-warning">
+  {{ message }}
+</div>
+{% endfor %}
 <a href="{{ path('task_create') }}" class="btn btn-info pull-right"
   >Créer une tâche</a
 >
@@ -38,13 +46,13 @@ block body %}
       </div>
       {% if app.user.id == task.user.id or app.user.roles[0] == "ROLE_ADMIN" %}
       <div>
-        <form action="{{ path('task_toggle', { id: task.id }) }}">
+        <form action="{{ path('toggle', { id: task.id }) }}">
           <button class="btn btn-success btn-sm pull-right">
             {% if task.isDone == 0 %}Marquer comme faite{% else %}Marquer non
             terminée{% endif %}
           </button>
         </form>
-        <form action="{{ path('task_delete', { id: task.id }) }}">
+        <form action="{{ path('delete', { id: task.id }) }}">
           <button class="btn btn-danger btn-sm pull-right">Supprimer</button>
         </form>
       </div>
