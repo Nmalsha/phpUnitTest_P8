@@ -23,6 +23,7 @@ class UserController extends AbstractController
             return $this->render('user/list.html.twig', ['users' => $this->getDoctrine()->getRepository(User::class)->findAll()]);
         }
         //if the current user is not the admin re direct to the task list
+        $this->addFlash('error', "Vous n'pouvez pas accéder aux pages de gestion des utilisateurs ");
         return $this->redirectToRoute('task_list');
     }
     /**
@@ -66,15 +67,18 @@ class UserController extends AbstractController
     /**
      * @Route("/users/{id}/edit", name="user_edit")
      */
-    public function editAction(User $user, Request $request, UserPasswordHasherInterface $userPasswordHasher)
+    public function editAction($id, User $user, Request $request, UserPasswordHasherInterface $userPasswordHasher)
     {
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
+        // dd($this->getDoctrine()->getRepository(User::class)->findOneBy(['id' => $id])->getroles()[0]);
 
         if ($form->isSubmitted() && $form->isValid()) {
             $password = $userPasswordHasher->hashPassword($user, $user->getPassword());
             $user->setPassword($password);
+            //   dd($form->get('roles')->getData());
+            $user->setRoles($form->get('roles')->getData());
 
             $this->getDoctrine()->getManager()->flush();
 
