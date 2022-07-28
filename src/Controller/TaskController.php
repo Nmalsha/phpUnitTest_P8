@@ -76,7 +76,24 @@ class TaskController extends AbstractController
         $connectedUserId = $this->getUser()->getId();
         //user id of the task owner
         $taskOwnerId = $this->taskRepository->findOneBy(['id' => $id])->getUser()->getId();
+//check if the owner of the task is 'ANONYME'
+        // dd($this->taskRepository->findOneBy(['id' => $id])->getUser()->getUsername());
+        $userAnonyme = $this->taskRepository->findOneBy(['id' => $id])->getUser()->getUsername();
+
+        //  if (!$userAnonyme == "anonyme") {
+        // TODO if the username is anonyme the admin can delete the task
+        if ($userAnonyme == "anonyme" && $this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
+            $tasks = $this->taskRepository->findOneBy(['id' => $id]);
+            $this->em->remove($tasks);
+            $this->em->flush();
+
+            $this->addflash(
+                'success',
+                "La tâche {$tasks->getTitle()} a été supprimé avec succès !"
+            );
+        }
         if ($connectedUserId === $taskOwnerId) {
+            // dump($taskOwnerId, $connectedUserId);
             $tasks = $this->taskRepository->findOneBy(['id' => $id]);
             $this->em->remove($tasks);
             $this->em->flush();
@@ -89,6 +106,7 @@ class TaskController extends AbstractController
         } else {
             $this->addFlash('error', "Vous n'avez pas le doit de suppromer le tache ");
         }
+        //  }
         return $this->redirectToRoute('task_list');
     }
     /**
