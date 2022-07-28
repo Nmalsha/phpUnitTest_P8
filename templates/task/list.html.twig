@@ -55,6 +55,9 @@ block body %} {% for message in app.flashes('success') %}
         <form action="{{ path('delete', { id: task.id }) }}">
           <button class="btn btn-danger btn-sm pull-right">Supprimer</button>
         </form>
+        <form action="{{ path('task_edit', { id: task.id }) }}">
+          <button class="btn btn-warning btn-sm pull-right">Editer</button>
+        </form>
       </div>
       {% else %}
       <br />

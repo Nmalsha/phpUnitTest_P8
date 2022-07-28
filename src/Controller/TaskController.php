@@ -63,9 +63,32 @@ class TaskController extends AbstractController
     /**
      * @Route("/tasks/{id}/edit", name="task_edit")
      */
-    public function editTask(Request $request)
+    public function editTask(Request $request, $id, Task $task)
     {
+        //check the log user is the owner of the task
+        //get the task owner id
+        $taskOwnerId = $this->taskRepository->findOneBy(['id' => $id])->getUser()->getId();
+        //get the log user id
+        $connectedUserId = $this->getUser()->getId();
 
+        $tasks = $this->taskRepository->findOneBy(['id' => $id]);
+        $form = $this->createForm(TaskType::class, $tasks);
+        $form->handleRequest($request);
+        if ($connectedUserId === $taskOwnerId) {
+            if ($form->isSubmitted() && $form->isValid()) {
+
+                $task->setCreatedAt(new \DateTimeImmutable());
+                $this->em->flush();
+                return $this->redirectToRoute('task_list');
+            }
+
+        } else {
+            $this->addFlash('error', "Vous n'avez pas le doit de editer le tache ");
+        }
+        return $this->render('task/create_update.html.twig', [
+            'task' => $tasks,
+            'form' => $form->createView(),
+        ]);
     }
     /**
      * @Route("/tasks/{id}/delete", name="delete")
@@ -104,7 +127,7 @@ class TaskController extends AbstractController
             );
 
         } else {
-            $this->addFlash('error', "Vous n'avez pas le doit de suppromer le tache ");
+            $this->addFlash('error', "Vous n'avez pas le doit de supprimer le tache ");
         }
         //  }
         return $this->redirectToRoute('task_list');
