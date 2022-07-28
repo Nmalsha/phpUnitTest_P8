@@ -19,7 +19,11 @@ class UserController extends AbstractController
     public function listAction()
     {
 
-        return $this->render('user/list.html.twig', ['users' => $this->getDoctrine()->getRepository(User::class)->findAll()]);
+        if ($this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
+            return $this->render('user/list.html.twig', ['users' => $this->getDoctrine()->getRepository(User::class)->findAll()]);
+        }
+        //if the current user is not the admin re direct to the task list
+        return $this->redirectToRoute('task_list');
     }
     /**
      * @Route("/users/create", name="user_create")
@@ -51,7 +55,7 @@ class UserController extends AbstractController
 
                 return $this->redirectToRoute('user_list');
             } else {
-                $this->addFlash('error', "Vous n'avez pas le doit de realiser cet action");
+                $this->addFlash('error', "Vous n'avez pas le doit de créer un user");
 
             }
 
