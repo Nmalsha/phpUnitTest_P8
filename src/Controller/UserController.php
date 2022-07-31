@@ -23,6 +23,7 @@ class UserController extends AbstractController
             return $this->render('user/list.html.twig', ['users' => $this->getDoctrine()->getRepository(User::class)->findAll()]);
         }
         //if the current user is not the admin re direct to the task list
+        $this->addFlash('error', "Vous n'pouvez pas accéder aux pages de gestion des utilisateurs ");
         return $this->redirectToRoute('task_list');
     }
     /**
@@ -34,13 +35,14 @@ class UserController extends AbstractController
         UserAuthenticatorInterface $userAuthenticator) {
 
         // dd($this->getUser()->getRoles());
+
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
-        if ($form->isSubmitted() && $form->isValid()) {
-            // dd($this->getUser()->getRoles()[0]);
-            if ($this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
+        if ($this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
+            if ($form->isSubmitted() && $form->isValid()) {
+                // dd($this->getUser()->getRoles()[0]);
 
                 //encode the plain password
 
@@ -54,10 +56,10 @@ class UserController extends AbstractController
                 $this->addFlash('success', "L'utilisateur a bien été ajouté.");
 
                 return $this->redirectToRoute('user_list');
-            } else {
-                $this->addFlash('error', "Vous n'avez pas le doit de créer un user");
-
             }
+
+        } else {
+            $this->addFlash('error', "Vous n'avez pas le doit de créer un user");
 
         }
         return $this->render('user/create.html.twig', ['form' => $form->createView()]);
@@ -66,25 +68,33 @@ class UserController extends AbstractController
     /**
      * @Route("/users/{id}/edit", name="user_edit")
      */
-    public function editAction(User $user, Request $request, UserPasswordHasherInterface $userPasswordHasher)
+    public function editAction($id, User $user, Request $request, UserPasswordHasherInterface $userPasswordHasher)
     {
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
+        // dd($this->getDoctrine()->getRepository(User::class)->findOneBy(['id' => $id])->getroles()[0]);
+        // dd($this->getUser()->getRoles()[0]);
+        if ($this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
+            if ($form->isSubmitted() && $form->isValid()) {
+                $password = $userPasswordHasher->hashPassword($user, $user->getPassword());
+                $user->setPassword($password);
+                //   dd($form->get('roles')->getData());
+                $user->setRoles($form->get('roles')->getData());
 
-        if ($form->isSubmitted() && $form->isValid()) {
-            $password = $userPasswordHasher->hashPassword($user, $user->getPassword());
-            $user->setPassword($password);
+                $this->getDoctrine()->getManager()->flush();
 
-            $this->getDoctrine()->getManager()->flush();
+                $this->addFlash('success', "L'utilisateur a bien été modifié");
 
-            $this->addFlash('success', "L'utilisateur a bien été modifié");
+                return $this->redirectToRoute('user_list');
+            }
 
-            return $this->redirectToRoute('user_list');
+        } else {
+            $this->addFlash('error', "Vous n'avez pas le doit de editer un user");
+
         }
 
         return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
 
     }
-
 }
