@@ -1,4 +1,13 @@
-{% extends 'base.html.twig' %} {% block header_title %}
+{% extends 'base.html.twig' %} {% block header_title %} {% for message in
+app.flashes('success') %}
+<div class="alert alert-success">
+  {{ message }}
+</div>
+{% endfor %} {% for message in app.flashes('error') %}
+<div class="alert alert-warning">
+  {{ message }}
+</div>
+{% endfor %}
 <h1>
   Modifier <strong>{{ user.username }}</strong>
 </h1>
