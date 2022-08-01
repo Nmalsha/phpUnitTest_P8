@@ -44,11 +44,6 @@ class TaskController extends AbstractController
 
             if ($this->getUser()->getRoles()[0] == "ROLE_USER" || $this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
                 $task->setUser($this->getUser());
-            } elseif ($this->getuser()->getRoles()[0] == "ROLE_ANONYMOUS") {
-                $anonymous = $this->userRepository->findOneBy([
-                    'username' => 'Anonyme',
-                ]);
-                $task->setUser($anonymous);
             }
             // dd($task);
             $this->em->persist($task);
