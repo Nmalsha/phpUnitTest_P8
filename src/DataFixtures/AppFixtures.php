@@ -51,53 +51,61 @@ class AppFixtures extends Fixture
 
                 $manager->persist($task);
             }
-            for ($u = 0; $u < 1; $u++) {
-                $admin = new User();
-                $hashedPassword = $this->passwordHasher->hashPassword(
-                    $user,
-                    "admin"
-                );
-                $admin->setUserName($faker->firstName)
-                    ->setEmail("admin12@gmail.com")
-                    ->setPassword($hashedPassword)
-                    ->setRoles(["ROLE_ADMIN"]);
 
-                $manager->persist($admin);
+        }
+        for ($u = 0; $u < 1; $u++) {
+            $admin = new User();
+            $hashedPassword = $this->passwordHasher->hashPassword(
+                $user,
+                "admin"
+            );
+            $admin->setUserName($faker->firstName)
+                ->setEmail("admin12@gmail.com")
+                ->setPassword($hashedPassword)
+                ->setRoles(["ROLE_ADMIN"]);
 
-            }
-            for ($a = 0; $a < 5; $a++) {
-                $task = new Task();
-                $task->setTitle($faker->text(15))
-                    ->setContent($faker->paragraph(1))
-                    ->setUser($admin)
-                    ->setCreatedAt(new \DateTimeImmutable())
-                    ->setIsDone(false);
+            $manager->persist($admin);
 
-                $manager->persist($task);
-            }
-            for ($u = 0; $u < 1; $u++) {
-                $anonyme = new User();
-                $anonyme->setUserName("Anonyme")
-                    ->setEmail("anonyme@gmail.com")
-                    ->setPassword($hashedPassword)
-                    ->setRoles(["ROLE_USER"]);
+        }
+        for ($a = 0; $a < 5; $a++) {
+            $task = new Task();
+            $task->setTitle($faker->text(15))
+                ->setContent($faker->paragraph(1))
+                ->setUser($admin)
+                ->setCreatedAt(new \DateTimeImmutable())
+                ->setIsDone(false);
 
-                $manager->persist($anonyme);
-            }
-            $anonymous = $this->userRepository->findOneBy([
-                'username' => 'Anonyme',
-            ]);
-            for ($a = 0; $a < 5; $a++) {
-                $task = new Task();
-                $task->setTitle($faker->text(15))
-                    ->setContent($faker->paragraph(1))
-                    ->setUser($anonymous)
-                    ->setCreatedAt(new \DateTimeImmutable())
-                    ->setIsDone(false);
+            $manager->persist($task);
+        }
+        for ($u = 0; $u < 1; $u++) {
+            $anonyme = new User();
+            $anonyme->setUserName("Anonyme")
+                ->setEmail("anonyme@gmail.com")
+                ->setPassword($hashedPassword)
+                ->setRoles(["ROLE_USER"]);
 
-            }
+            $manager->persist($anonyme);
+            $manager->flush();
+
+        }
+
+        $anonymous = $this->userRepository->findOneBy([
+            'username' => 'Anonyme',
+        ]);
+
+        for ($a = 0; $a < 5; $a++) {
+
+            $task = new Task();
+            $task->setTitle($faker->text(15))
+                ->setContent($faker->paragraph(1))
+                ->setUser($anonymous)
+                ->setCreatedAt(new \DateTimeImmutable())
+                ->setIsDone(false);
+            $manager->persist($task);
+
         }
 
         $manager->flush();
     }
+
 }
