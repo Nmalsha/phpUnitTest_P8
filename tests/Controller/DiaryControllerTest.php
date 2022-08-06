@@ -14,27 +14,26 @@ class DiaryControllerTest extends WebTestCase
     public function setUp(): void
     {
         $this->client = static::createClient();
-        // // dd(static::getContainer()->get(UserRepository::class)->findOneByEmail('user-test@gmail.com'));
+
         $this->userRepository = static::getContainer()->get(UserRepository::class);
         $this->user = $this->userRepository->findOneByEmail('constance.gros@live.com');
-        // // dd($this->user);
+
         $this->urlGenerator = $this->client->getContainer()->get('router.default');
-        // // dd($this->user);
+
         $this->client->loginUser($this->user);
 
     }
-    public function testHomepageIsUp()
+    public function testHomepageIsUpWhenUserIsConnected()
     {
-        // $this->client->request('GET', '/');
-        // $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
 
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('homepage'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
     }
-    public function test2()
+    public function testHomepageIsUpWhenUserIsNotConnected()
     {
-
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('app_login'));
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
 }
