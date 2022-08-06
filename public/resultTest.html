@@ -1,0 +1,26 @@
+PHPUnit 9.5.21 [44;37m#StandWith[0m[43mUkraine[0m
+
+Testing 
+E                                                                   1 / 1 (100%)
+
+Time: 00:00.095, Memory: 22.00 MB
+
+There was 1 error:
+
+1) DiaryControllerTest::testHomepageIsUp
+Doctrine\Persistence\Mapping\MappingException: Class 'User' does not exist
+
+/home/malsha/Desktop/PHP_symfony/phpUnit_P8/vendor/doctrine/persistence/src/Persistence/Mapping/MappingException.php:90
+/home/malsha/Desktop/PHP_symfony/phpUnit_P8/vendor/doctrine/persistence/src/Persistence/Mapping/RuntimeReflectionService.php:41
+/home/malsha/Desktop/PHP_symfony/phpUnit_P8/vendor/doctrine/persistence/src/Persistence/Mapping/AbstractClassMetadataFactory.php:265
+/home/malsha/Desktop/PHP_symfony/phpUnit_P8/vendor/doctrine/persistence/src/Persistence/Mapping/AbstractClassMetadataFactory.php:299
+/home/malsha/Desktop/PHP_symfony/phpUnit_P8/vendor/doctrine/persistence/src/Persistence/Mapping/AbstractClassMetadataFactory.php:192
+/home/malsha/Desktop/PHP_symfony/phpUnit_P8/vendor/doctrine/orm/lib/Doctrine/ORM/EntityManager.php:313
+/home/malsha/Desktop/PHP_symfony/phpUnit_P8/vendor/doctrine/doctrine-bundle/Repository/ContainerRepositoryFactory.php:40
+/home/malsha/Desktop/PHP_symfony/phpUnit_P8/vendor/doctrine/orm/lib/Doctrine/ORM/EntityManager.php:816
+/home/malsha/Desktop/PHP_symfony/phpUnit_P8/var/cache/test/ContainerJJcA8g3/EntityManager_9a5be93.php:227
+/home/malsha/Desktop/PHP_symfony/phpUnit_P8/tests/Controller/DiaryControllerTest.php:18
+phpvfscomposer:///home/malsha/Desktop/PHP_symfony/phpUnit_P8/vendor/phpunit/phpunit/phpunit:97
+
+ERRORS!
+Tests: 1, Assertions: 0, Errors: 1.

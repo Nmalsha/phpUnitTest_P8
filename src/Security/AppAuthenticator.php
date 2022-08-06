@@ -2,6 +2,7 @@
 
 namespace App\Security;
 
+use App\Repository\UserRepository;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -21,9 +22,10 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
 
     public const LOGIN_ROUTE = 'app_login';
 
-    public function __construct(UrlGeneratorInterface $urlGenerator)
+    public function __construct(UrlGeneratorInterface $urlGenerator, UserRepository $userRepository)
     {
         $this->urlGenerator = $urlGenerator;
+        $this->userRepository = $userRepository;
     }
 
     public function authenticate(Request $request): Passport
@@ -57,8 +59,11 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
     {
 
         // dd($this->getTargetPath($request->getSession(), $firewallName));
-        if ($targetPath = $this->urlGenerator->generate('task_list')) {
-            return new RedirectResponse($targetPath);
+        $getemail = $request->request->get('email');
+        $userRole = $this->userRepository->findOneBy(['email' => $getemail])->getRoles()[0];
+
+        if ($userRole = 'ROLE_ADMIN') {
+            return new RedirectResponse($this->urlGenerator->generate('user_list'));
         }
 
         return new RedirectResponse($this->urlGenerator->generate('task_list'));
