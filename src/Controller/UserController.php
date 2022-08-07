@@ -34,15 +34,12 @@ class UserController extends AbstractController
         EntityManagerInterface $entityManager,
         UserAuthenticatorInterface $userAuthenticator) {
 
-        // dd($this->getUser()->getRoles());
-
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
         if ($this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
             if ($form->isSubmitted() && $form->isValid()) {
-                // dd($this->getUser()->getRoles()[0]);
 
                 //encode the plain password
 
@@ -60,6 +57,7 @@ class UserController extends AbstractController
 
         } else {
             $this->addFlash('error', "Vous n'avez pas le doit de créer un user");
+            return $this->redirectToRoute('task_list');
 
         }
         return $this->render('user/create.html.twig', ['form' => $form->createView()]);
@@ -91,6 +89,7 @@ class UserController extends AbstractController
 
         } else {
             $this->addFlash('error', "Vous n'avez pas le doit de editer un user");
+            return $this->redirectToRoute('task_list');
 
         }
 
