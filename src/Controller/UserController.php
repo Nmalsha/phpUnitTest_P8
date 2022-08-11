@@ -80,8 +80,7 @@ class UserController extends AbstractController
         $form = $this->createForm(UserType::class, $user);
 
         $form->handleRequest($request);
-        // dd($this->getDoctrine()->getRepository(User::class)->findOneBy(['id' => $id])->getroles()[0]);
-        // dd($this->getUser()->getRoles()[0]);
+
         if ($this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
             if ($form->isSubmitted() && $form->isValid()) {
                 $password = $userPasswordHasher->hashPassword($user, $user->getPassword());

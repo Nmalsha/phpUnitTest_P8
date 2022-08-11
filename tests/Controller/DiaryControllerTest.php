@@ -23,6 +23,11 @@ class DiaryControllerTest extends WebTestCase
         $this->client->loginUser($this->user);
 
     }
+
+    /**
+     * @covers DefaultController::index
+     */
+
     public function testHomepageIsUpWhenUserIsConnected()
     {
 
@@ -30,6 +35,10 @@ class DiaryControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
     }
+    /**
+     * @covers DefaultController::index
+     */
+
     public function testHomepageIsUpWhenUserIsNotConnected()
     {
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('app_login'));
