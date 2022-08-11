@@ -20,6 +20,7 @@ class TasksControllerTest extends WebTestCase
         $this->urlGenerator = $this->client->getContainer()->get('router.default');
 
     }
+
     //check redirection of the page when user/admin click on create task
 
     /**
@@ -33,6 +34,7 @@ class TasksControllerTest extends WebTestCase
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_list'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
+
     /**
      * @covers TaskController::listAction
      */
@@ -44,4 +46,36 @@ class TasksControllerTest extends WebTestCase
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('app_login'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
+
+    //check  create task
+
+    /**
+     * @covers TaskController::createAction
+     */
+    public function testTaskCreate(): void
+    {
+        $user = $this->client->loginUser($this->adminUser);
+        $data = ["test-task", "test", "1"];
+        // dd($data);
+        $form = $this->createTaskForm($user, $data);
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_list'));
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+
+    }
+
+    public function createTaskForm($user, $data)
+    {
+        $this->client->loginUser($this->adminUser);
+        $crawler = $this->client->request('GET', '/tasks/create');
+        $createButton = $crawler->selectButton("Ajouter");
+        $form = $createButton->form();
+        $form["task[title]"] = $data[0];
+
+        $form["task[content]"] = $data[1];
+        $form["task[isDone]"] = $data[2];
+
+        return $this->client->submit($form);
+
+    }
+
 }

@@ -67,6 +67,7 @@ class UserControllerTest extends WebTestCase
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
+//check user create
     /**
      * @covers UserController::createAction
      */
@@ -77,9 +78,11 @@ class UserControllerTest extends WebTestCase
         $data = ["User-Test", "password", "password", "ROLE_USER", "user.test@gmail.com"];
         // dd($data);
 
-        $form = $this->createForm($userAdmin, $data);
-        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_list'));
+        $this->createForm($userAdmin, $data);
+
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_list'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+
     }
 
 //check redirection of user edit depending the role of the user
@@ -91,10 +94,11 @@ class UserControllerTest extends WebTestCase
     public function testEditUserPageRedirectWhenUserIsNotAdmin(): void
     {
         $this->client->loginUser($this->user);
-        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_list'));
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_list'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
     }
 
+//check user edit
     /**
      * @covers UserController::editAction
      */
@@ -123,7 +127,7 @@ class UserControllerTest extends WebTestCase
 
     private function createForm($user, $data)
     {
-        $this->client->loginUser($this->adminUser);
+        $this->client->loginUser($user);
         $crawler = $this->client->request('GET', '/users/create');
         $createButton = $crawler->selectButton("Ajouter");
         $form = $createButton->form();
