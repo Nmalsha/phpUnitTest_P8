@@ -119,6 +119,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     {
         return null;
     }
+    
     public function getRoles(): array
     {
         $roles = $this->roles;
