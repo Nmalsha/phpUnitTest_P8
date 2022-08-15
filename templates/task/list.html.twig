@@ -44,7 +44,8 @@ block body %} {% for message in app.flashes('success') %}
           <br />
         </div>
       </div>
-      {% if app.user.id == task.user.id or app.user.roles[0] == "ROLE_ADMIN" %}
+      {% if app.user.id == task.user.id or app.user.roles[0] == "ROLE_ADMIN" and
+      task.user.username == "Anonyme" %}
       <div>
         <form action="{{ path('toggle', { id: task.id }) }}">
           <button class="btn btn-success btn-sm pull-right">
