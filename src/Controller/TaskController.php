@@ -100,7 +100,8 @@ class TaskController extends AbstractController
     public function deleteTask($id, Task $task)
     {
         //connected user id
-        $connectedUserId = $this->getUser()->getId();
+        $connectedUser = $this->getUser();
+        $connectedUserId = $connectedUser->getId();
         //user id of the task owner
         $taskOwnerId = $this->taskRepository->findOneBy(['id' => $id])->getUser()->getId();
 //check if the owner of the task is 'ANONYME'

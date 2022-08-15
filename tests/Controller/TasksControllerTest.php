@@ -66,7 +66,7 @@ class TasksControllerTest extends WebTestCase
     //check  edit task
 
     /**
-     * @covers TaskController::editAction
+     * @covers TaskController::editTask
      */
     public function testTaskEditWhenUserIsConnected(): void
     {
@@ -83,6 +83,22 @@ class TasksControllerTest extends WebTestCase
         $this->client->submit($form);
 
         $this->client->followRedirects();
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_list'));
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+
+    }
+
+    //check  edit task
+
+    /**
+     * @covers TaskController::deleteTask
+     */
+    public function testTaskDeleteWhenUserIsConnected(): void
+    {
+        $user = $this->client->loginUser($this->user);
+        $task = $this->taskRepository->findOneByTitle('Tempore.');
+        $this->client->request('GET', '/tasks/' . $task->getId() . '/delete');
+
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_list'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
