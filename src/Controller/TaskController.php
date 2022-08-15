@@ -67,9 +67,18 @@ class TaskController extends AbstractController
         $connectedUserId = $this->getUser()->getId();
 
         $tasks = $this->taskRepository->findOneBy(['id' => $id]);
+        //get anonyme user Id
+        $findAnonymeUser = $this->userRepository->findOneBy(['username' => 'Anonyme']);
+
+        $findAnonymeUserId = $findAnonymeUser->getId();
+        //check if the connected user is admin
+        $isadmin = $this->getUser()->getRoles()[0] == "ROLE_ADMIN";
+        // $isadmin = $this->getUser()->getRoles()[0] == "ROLE_ADMIN";
+
+        //dd($this->taskRepository->findOneBy(['id' => $id])->getUser()->getUsername());
         $form = $this->createForm(TaskType::class, $tasks);
         $form->handleRequest($request);
-        if ($connectedUserId === $taskOwnerId) {
+        if ($connectedUserId === $taskOwnerId || $isadmin && $this->taskRepository->findOneBy(['id' => $id])->getUser()->getUsername() == "Anonyme") {
             if ($form->isSubmitted() && $form->isValid()) {
 
                 $task->setCreatedAt(new \DateTimeImmutable());
@@ -97,10 +106,11 @@ class TaskController extends AbstractController
 //check if the owner of the task is 'ANONYME'
         // dd($this->taskRepository->findOneBy(['id' => $id])->getUser()->getUsername());
         $userAnonyme = $this->taskRepository->findOneBy(['id' => $id])->getUser()->getUsername();
-
+        $isadmin = $this->getUser()->getRoles()[0] == "ROLE_ADMIN";
+        // dd($connectedUserId, $taskOwnerId);
         //  if (!$userAnonyme == "anonyme") {
         // TODO if the username is anonyme the admin can delete the task
-        if ($userAnonyme == "anonyme" && $this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
+        if ($connectedUserId === $taskOwnerId && $isadmin && $this->taskRepository->findOneBy(['id' => $id])->getUser()->getUsername() == "Anonyme") {
             $tasks = $this->taskRepository->findOneBy(['id' => $id]);
             $this->em->remove($tasks);
             $this->em->flush();

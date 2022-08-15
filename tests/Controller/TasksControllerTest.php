@@ -68,15 +68,15 @@ class TasksControllerTest extends WebTestCase
     /**
      * @covers TaskController::editAction
      */
-    public function testTaskEdit(): void
+    public function testTaskEditWhenUserIsConnected(): void
     {
-        $user = $this->client->loginUser($this->adminUser);
-        $TestTaskId = $this->taskRepository->findOneByTitle('test-task');
+        $user = $this->client->loginUser($this->user);
+        $TestTaskId = $this->taskRepository->findOneByTitle('test-task - modify');
         $crowler = $this->client->request('GET', '/tasks/' . $TestTaskId->getId() . '/edit');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $form = $crowler->selectButton('Editer')->form();
-        $form['task[title]'] = 'test-task - modify';
+        $form['task[title]'] = 'test-task ';
         $form['task[content]'] = 'test -modify';
         $form["task[isDone]"] = '1';
 
