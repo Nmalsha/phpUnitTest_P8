@@ -127,7 +127,7 @@ class UserControllerTest extends WebTestCase
 
     private function createForm($user, $data)
     {
-        $this->client->loginUser($user);
+        $this->client->loginUser($this->adminUser);
         $crawler = $this->client->request('GET', '/users/create');
         $createButton = $crawler->selectButton("Ajouter");
         $form = $createButton->form();
