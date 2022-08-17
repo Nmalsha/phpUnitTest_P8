@@ -52,9 +52,20 @@ class TasksControllerTest extends WebTestCase
     /**
      * @covers TaskController::createAction
      */
-    public function testTaskCreate(): void
+    public function testTaskCreateIfTheUserIsAdmin(): void
     {
         $user = $this->client->loginUser($this->adminUser);
+        $data = ["test-task", "test", "1"];
+        // dd($data);
+        $form = $this->createTaskForm($user, $data);
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_list'));
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+
+    }
+
+    public function testTaskCreateIfTheUserIsNotAdmin(): void
+    {
+        $user = $this->client->loginUser($this->user);
         $data = ["test-task", "test", "1"];
         // dd($data);
         $form = $this->createTaskForm($user, $data);
@@ -88,7 +99,7 @@ class TasksControllerTest extends WebTestCase
 
     }
 
-    //check  edit task
+    //check  delete task
 
     /**
      * @covers TaskController::deleteTask
@@ -97,6 +108,7 @@ class TasksControllerTest extends WebTestCase
     {
         $user = $this->client->loginUser($this->user);
         $task = $this->taskRepository->findOneByTitle('Tempore.');
+
         $this->client->request('GET', '/tasks/' . $task->getId() . '/delete');
 
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_list'));
