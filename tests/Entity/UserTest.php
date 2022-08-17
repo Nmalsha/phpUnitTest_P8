@@ -10,7 +10,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
  * @covers \App\Entity\User
  */
 
-class UserControllerTest extends WebTestCase
+class UserTest extends WebTestCase
 {
 
     public function setUp(): void
