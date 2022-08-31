@@ -16,13 +16,13 @@
 
 1.Clonez le repository Github
 
-git clone https://github.com/Nmalsha/phpUnitTest_P8.git
+    git clone https://github.com/Nmalsha/phpUnitTest_P8.git
 
-2.Configure BDD connect on .env file
+2. Configure BDD connect on .env file
 
-3. Installer les dépendances
+3.Créer la BDD
 
-   composer install
+    composer install
 
 4.Créer la BDD
 
