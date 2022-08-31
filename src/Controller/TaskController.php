@@ -101,11 +101,13 @@ class TaskController extends AbstractController
     {
         //connected user id
         $connectedUser = $this->getUser();
+        // dd($connectedUser);
         $connectedUserId = $connectedUser->getId();
+
         //user id of the task owner
         $taskOwnerId = $this->taskRepository->findOneBy(['id' => $id])->getUser()->getId();
 //check if the owner of the task is 'ANONYME'
-        
+
         $userAnonyme = $this->taskRepository->findOneBy(['id' => $id])->getUser()->getUsername();
         $isadmin = $this->getUser()->getRoles()[0] == "ROLE_ADMIN";
         // dd($connectedUserId, $taskOwnerId);
