@@ -32,19 +32,8 @@ class AppAuthenticator extends AbstractLoginFormAuthenticator
     {
         $email = $request->request->get('email', '');
 
-        // $email = $request->get('login')['email'];
-        // dd($request->request->get('_csrf_token'));
         $request->getSession()->set(Security::LAST_USERNAME, $email);
-        // dd(new UserBadge($email), $email);
-        // return new Passport(
 
-        //     new UserBadge($email),
-
-        //     new PasswordCredentials($request->request->get('password', '')),
-        //     [
-        //         new CsrfTokenBadge('authenticate', $request->request->get('_csrf_token')),
-        //     ]
-        // );
         return new Passport(
             new UserBadge($email),
             new PasswordCredentials($request->request->get('password', '')),

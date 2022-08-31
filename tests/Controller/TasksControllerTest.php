@@ -18,6 +18,7 @@ class TasksControllerTest extends WebTestCase
         $this->user = $this->userRepository->findOneByEmail('constance.gros@live.com');
         $this->adminUser = $this->userRepository->findOneByEmail('admin12@gmail.com');
         $this->urlGenerator = $this->client->getContainer()->get('router.default');
+        $this->testAnonymous = $this->userRepository->findOneByEmail('anonyme@gmail.com');
 
     }
 
@@ -111,8 +112,29 @@ class TasksControllerTest extends WebTestCase
 
         $this->client->request('GET', '/tasks/' . $task->getId() . '/delete');
 
-        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_list'));
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_list'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+
+    }
+    public function testDeleteAnonymeTaskWhenUserIsAdmin(): void
+    {
+        $this->client->loginUser($this->adminUser);
+        $id = $this->taskRepository->findOneByTitle('Aperiam minus.');
+        $this->client->request('GET', '/tasks/' . $id->getId() . '/delete');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
+
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_list'));
+        $this->assertResponseStatusCodeSame(Response::HTTP_OK);
+    }
+
+    public function testToggleTaskRedirectWithAuthorization(): void
+    {
+
+        $this->client->loginUser($this->user);
+        $id = $this->taskRepository->findOneByTitle('Tempore.');
+
+        $this->client->request('GET', '/tasks/' . $id->getId() . '/toggle');
+        $this->assertResponseStatusCodeSame(Response::HTTP_FOUND);
 
     }
 
