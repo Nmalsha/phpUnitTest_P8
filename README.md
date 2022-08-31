@@ -36,6 +36,16 @@
 
         php bin/console doctrine:fixture:load
 
+7.start server
+
+        php -S localhost:8000 -t public
+
+8.Test
+
+        vendor/bin/phpunit --filter=nome de fonction test
+         or
+        bin/phpunit --coverage-html chémas de votre repo local/raport
+
 Tester les requêtes avec un compte User
 
     login: admin12@gmail.com
