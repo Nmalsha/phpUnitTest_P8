@@ -7,6 +7,7 @@ use App\Form\TaskType;
 use App\Repository\TaskRepository;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
@@ -18,14 +19,21 @@ class TaskController extends AbstractController
     private $userRepository;
     private $em;
     private $cache;
+    private $paginator;
 
-    public function __construct(TaskRepository $taskRepository, EntityManagerInterface $em, UserRepository $userRepository, CacheInterface $cache)
-    {
+    public function __construct(TaskRepository $taskRepository,
+        EntityManagerInterface $em,
+        UserRepository $userRepository,
+        CacheInterface $cache,
+        PaginatorInterface $paginator,
+        Request $request) {
 
         $this->taskRepository = $taskRepository;
         $this->em = $em;
         $this->userRepository = $userRepository;
         $this->cache = $cache;
+        $this->paginator = $paginator;
+        $this->request = $request;
 
     }
 
@@ -34,9 +42,15 @@ class TaskController extends AbstractController
      */
     public function listAction()
     {
+
         $tasks = $this->cache->get('task_list', function () {
             return $this->taskRepository->findBy(array(), array('isDone' => 'ASC', 'createdAt' => 'DESC'));
         });
+        // $taskpag = $this->paginator->paginate(
+        //     $tasks,
+        //     $this->request->query->getInt('page', 1),
+        //     6
+        // );
         return $this->render('task/list.html.twig', ['tasks' => $tasks]);
     }
     /**
@@ -80,15 +94,10 @@ class TaskController extends AbstractController
         $connectedUserId = $this->getUser()->getId();
 
         $tasks = $this->taskRepository->findOneBy(['id' => $id]);
-        //get anonyme user Id
-        $findAnonymeUser = $this->userRepository->findOneBy(['username' => 'Anonyme']);
 
-        $findAnonymeUserId = $findAnonymeUser->getId();
         //check if the connected user is admin
         $isadmin = $this->getUser()->getRoles()[0] == "ROLE_ADMIN";
-        // $isadmin = $this->getUser()->getRoles()[0] == "ROLE_ADMIN";
 
-        //dd($this->taskRepository->findOneBy(['id' => $id])->getUser()->getUsername());
         $form = $this->createForm(TaskType::class, $tasks);
         $form->handleRequest($request);
         if ($connectedUserId === $taskOwnerId || $isadmin && $this->taskRepository->findOneBy(['id' => $id])->getUser()->getUsername() == "Anonyme") {
@@ -114,7 +123,7 @@ class TaskController extends AbstractController
     /**
      * @Route("/tasks/{id}/delete", name="delete")
      */
-    public function deleteTask($id, Task $task)
+    public function deleteTask($id)
     {
         //connected user id
         $connectedUser = $this->getUser();
@@ -125,11 +134,9 @@ class TaskController extends AbstractController
         $taskOwnerId = $this->taskRepository->findOneBy(['id' => $id])->getUser()->getId();
 //check if the owner of the task is 'ANONYME'
 
-        $userAnonyme = $this->taskRepository->findOneBy(['id' => $id])->getUser()->getUsername();
         $isadmin = $this->getUser()->getRoles()[0] == "ROLE_ADMIN";
-        // dd($connectedUserId, $taskOwnerId);
-        //  if (!$userAnonyme == "anonyme") {
-        // TODO if the username is anonyme the admin can delete the task
+
+        //  if the username is anonyme the admin can delete the task
         if ($connectedUserId === $taskOwnerId && $isadmin && $this->taskRepository->findOneBy(['id' => $id])->getUser()->getUsername() == "Anonyme") {
             $tasks = $this->taskRepository->findOneBy(['id' => $id]);
             $this->em->remove($tasks);
@@ -142,7 +149,7 @@ class TaskController extends AbstractController
             );
         }
         if ($connectedUserId === $taskOwnerId) {
-            // dump($taskOwnerId, $connectedUserId);
+
             $tasks = $this->taskRepository->findOneBy(['id' => $id]);
             $this->em->remove($tasks);
             $this->em->flush();
@@ -164,7 +171,7 @@ class TaskController extends AbstractController
     /**
      * @Route("/tasks/{id}/toggle", name="toggle")
      */
-    public function toggleTaskAction($id, Task $task)
+    public function toggleTaskAction($id)
     {
         $tasks = $this->taskRepository->findOneBy(['id' => $id]);
 

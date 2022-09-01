@@ -95,7 +95,7 @@ class TasksControllerTest extends WebTestCase
         $this->client->submit($form);
 
         $this->client->followRedirects();
-        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_list'));
+        $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('task_list'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
     }
