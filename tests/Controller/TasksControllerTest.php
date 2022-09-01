@@ -138,7 +138,7 @@ class TasksControllerTest extends WebTestCase
 
     }
 
-    public function createTaskForm($user, $data)
+    public function createTaskForm($data)
     {
         $this->client->loginUser($this->adminUser);
         $crawler = $this->client->request('GET', '/tasks/create');

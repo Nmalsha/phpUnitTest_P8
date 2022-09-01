@@ -114,7 +114,7 @@ class TaskController extends AbstractController
     /**
      * @Route("/tasks/{id}/delete", name="delete")
      */
-    public function deleteTask($id, Task $task)
+    public function deleteTask($id)
     {
         //connected user id
         $connectedUser = $this->getUser();
@@ -125,11 +125,9 @@ class TaskController extends AbstractController
         $taskOwnerId = $this->taskRepository->findOneBy(['id' => $id])->getUser()->getId();
 //check if the owner of the task is 'ANONYME'
 
-        $userAnonyme = $this->taskRepository->findOneBy(['id' => $id])->getUser()->getUsername();
         $isadmin = $this->getUser()->getRoles()[0] == "ROLE_ADMIN";
-        // dd($connectedUserId, $taskOwnerId);
-        //  if (!$userAnonyme == "anonyme") {
-        // TODO if the username is anonyme the admin can delete the task
+
+        //  if the username is anonyme the admin can delete the task
         if ($connectedUserId === $taskOwnerId && $isadmin && $this->taskRepository->findOneBy(['id' => $id])->getUser()->getUsername() == "Anonyme") {
             $tasks = $this->taskRepository->findOneBy(['id' => $id]);
             $this->em->remove($tasks);
@@ -142,7 +140,7 @@ class TaskController extends AbstractController
             );
         }
         if ($connectedUserId === $taskOwnerId) {
-            // dump($taskOwnerId, $connectedUserId);
+
             $tasks = $this->taskRepository->findOneBy(['id' => $id]);
             $this->em->remove($tasks);
             $this->em->flush();

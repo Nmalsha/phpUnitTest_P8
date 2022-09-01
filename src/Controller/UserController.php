@@ -11,7 +11,6 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
 use Symfony\Contracts\Cache\CacheInterface;
 
 class UserController extends AbstractController
@@ -36,19 +35,24 @@ class UserController extends AbstractController
     {
 
         if ($this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
-            return $this->render('user/list.html.twig', ['users' => $this->userRepository->findAll()]);
+            $users = $this->cache->get('user_list', function () {
+                return $this->userRepository->findAll();
+            });
+
+            return $this->render('user/list.html.twig', ['users' => $users]);
         }
         //if the current user is not the admin re direct to the task list
         $this->addFlash('error', "Vous n'pouvez pas accéder aux pages de gestion des utilisateurs ");
         return $this->redirectToRoute('task_list');
     }
+
     /**
      * @Route("/users/create", name="user_create")
      */
     public function createAction(Request $request,
         UserPasswordHasherInterface $userPasswordHasher,
-        EntityManagerInterface $entityManager,
-        UserAuthenticatorInterface $userAuthenticator) {
+        EntityManagerInterface $entityManager
+    ) {
 
         $user = new User();
         $form = $this->createForm(UserType::class, $user);
@@ -65,6 +69,8 @@ class UserController extends AbstractController
                 $user->setRoles($form->get('roles')->getData());
                 $entityManager->persist($user);
                 $entityManager->flush();
+
+                $this->cache->delete('user_list');
 
                 $this->addFlash('success', "L'utilisateur a bien été ajouté.");
 
@@ -98,6 +104,8 @@ class UserController extends AbstractController
                 $this->doctrine->getManager()->flush();
 
                 $this->addFlash('success', "L'utilisateur a bien été modifié");
+
+                $this->cache->delete('user_list');
 
                 return $this->redirectToRoute('user_list');
             }
