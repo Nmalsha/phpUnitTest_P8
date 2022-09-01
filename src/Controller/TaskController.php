@@ -83,7 +83,6 @@ class TaskController extends AbstractController
         //get anonyme user Id
         $findAnonymeUser = $this->userRepository->findOneBy(['username' => 'Anonyme']);
 
-        $findAnonymeUserId = $findAnonymeUser->getId();
         //check if the connected user is admin
         $isadmin = $this->getUser()->getRoles()[0] == "ROLE_ADMIN";
         // $isadmin = $this->getUser()->getRoles()[0] == "ROLE_ADMIN";
@@ -162,7 +161,7 @@ class TaskController extends AbstractController
     /**
      * @Route("/tasks/{id}/toggle", name="toggle")
      */
-    public function toggleTaskAction($id, Task $task)
+    public function toggleTaskAction($id)
     {
         $tasks = $this->taskRepository->findOneBy(['id' => $id]);
 
