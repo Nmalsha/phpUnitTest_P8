@@ -16,13 +16,13 @@
 
 1.Clonez le repository Github
 
-git clone https://github.com/Nmalsha/phpUnitTest_P8.git
+    git clone https://github.com/Nmalsha/phpUnitTest_P8.git
 
-2.Configure BDD connect on .env file
+2. Configure BDD connect on .env file
 
-3. Installer les dépendances
+3.Créer la BDD
 
-   composer install
+    composer install
 
 4.Créer la BDD
 
@@ -35,6 +35,16 @@ git clone https://github.com/Nmalsha/phpUnitTest_P8.git
 6.Installer la Fixture (démo de données fictives)
 
         php bin/console doctrine:fixture:load
+
+7.start server
+
+        php -S localhost:8000 -t public
+
+8.Test
+
+        vendor/bin/phpunit --filter=nome de fonction test
+         or
+        bin/phpunit --coverage-html chémas de votre repo local/raport
 
 Tester les requêtes avec un compte User
 
