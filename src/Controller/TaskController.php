@@ -10,14 +10,23 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Contracts\Cache\CacheInterface;
 
 class TaskController extends AbstractController
 {
-    public function __construct(TaskRepository $taskRepository, EntityManagerInterface $em, UserRepository $userRepository)
+    private $taskRepository;
+    private $userRepository;
+    private $em;
+    private $cache;
+
+    public function __construct(TaskRepository $taskRepository, EntityManagerInterface $em, UserRepository $userRepository, CacheInterface $cache)
     {
+
         $this->taskRepository = $taskRepository;
         $this->em = $em;
         $this->userRepository = $userRepository;
+        $this->cache = $cache;
+
     }
 
     /**
@@ -25,7 +34,10 @@ class TaskController extends AbstractController
      */
     public function listAction()
     {
-        return $this->render('task/list.html.twig', ['tasks' => $this->taskRepository->findBy(array(), array('isDone' => 'ASC', 'createdAt' => 'DESC'))]);
+        $tasks = $this->cache->get('task_list', function () {
+            return $this->taskRepository->findBy(array(), array('isDone' => 'ASC', 'createdAt' => 'DESC'));
+        });
+        return $this->render('task/list.html.twig', ['tasks' => $tasks]);
     }
     /**
      * @Route("/tasks/create", name="task_create")
@@ -48,7 +60,8 @@ class TaskController extends AbstractController
             // dd($task);
             $this->em->persist($task);
             $this->em->flush();
-
+            //delete cache key
+            $this->cache->delete('task_list');
             $this->addFlash('success', 'La tâche a été bien été ajoutée à la liste.');
             return $this->redirectToRoute('task_list');
         }
@@ -83,6 +96,10 @@ class TaskController extends AbstractController
 
                 $task->setCreatedAt(new \DateTimeImmutable());
                 $this->em->flush();
+
+                //delete cache key
+                $this->cache->delete('task_list');
+
                 return $this->redirectToRoute('task_list');
             }
 
@@ -117,7 +134,8 @@ class TaskController extends AbstractController
             $tasks = $this->taskRepository->findOneBy(['id' => $id]);
             $this->em->remove($tasks);
             $this->em->flush();
-
+            //delete cache key
+            $this->cache->delete('task_list');
             $this->addflash(
                 'success',
                 "La tâche {$tasks->getTitle()} a été supprimé avec succès !"
@@ -128,6 +146,9 @@ class TaskController extends AbstractController
             $tasks = $this->taskRepository->findOneBy(['id' => $id]);
             $this->em->remove($tasks);
             $this->em->flush();
+
+            //delete cache key
+            $this->cache->delete('task_list');
 
             $this->addflash(
                 'success',
@@ -153,6 +174,9 @@ class TaskController extends AbstractController
             $tasks->setIsDone(false);
         }
         $this->em->flush();
+
+        //delete cache key
+        $this->cache->delete('task_list');
 
         $this->addFlash('success', "Tâche mise à jour");
 

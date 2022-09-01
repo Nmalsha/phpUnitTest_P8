@@ -12,14 +12,21 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Security\Http\Authentication\UserAuthenticatorInterface;
+use Symfony\Contracts\Cache\CacheInterface;
 
 class UserController extends AbstractController
 {
-    public function __construct(UserRepository $userRepository, ManagerRegistry $doctrine)
+
+    private $userRepository;
+    private $doctrine;
+    private $cache;
+
+    public function __construct(UserRepository $userRepository, ManagerRegistry $doctrine, CacheInterface $cache)
     {
 
         $this->userRepository = $userRepository;
         $this->doctrine = $doctrine;
+        $this->cache = $cache;
     }
 
     /**
