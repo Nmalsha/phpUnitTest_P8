@@ -69,7 +69,7 @@ class UserController extends AbstractController
                 $user->setRoles($form->get('roles')->getData());
                 $entityManager->persist($user);
                 $entityManager->flush();
-
+                // delete cache key
                 $this->cache->delete('user_list');
 
                 $this->addFlash('success', "L'utilisateur a bien été ajouté.");
@@ -104,7 +104,7 @@ class UserController extends AbstractController
                 $this->doctrine->getManager()->flush();
 
                 $this->addFlash('success', "L'utilisateur a bien été modifié");
-
+                // delete cache key
                 $this->cache->delete('user_list');
 
                 return $this->redirectToRoute('user_list');
