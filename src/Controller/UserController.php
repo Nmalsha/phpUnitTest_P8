@@ -7,6 +7,7 @@ use App\Form\UserType;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\Persistence\ManagerRegistry;
+use Knp\Component\Pager\PaginatorInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
@@ -31,7 +32,7 @@ class UserController extends AbstractController
     /**
      * @Route("/users", name="user_list")
      */
-    public function listAction()
+    public function listAction(Request $request, PaginatorInterface $paginator)
     {
 
         if ($this->getUser()->getRoles()[0] == "ROLE_ADMIN") {
@@ -39,7 +40,13 @@ class UserController extends AbstractController
                 return $this->userRepository->findAll();
             });
 
-            return $this->render('user/list.html.twig', ['users' => $users]);
+            $userspag = $paginator->paginate(
+                $users,
+                $request->query->getInt('page', 1),
+                5
+            );
+
+            return $this->render('user/list.html.twig', ['users' => $userspag]);
         }
         //if the current user is not the admin re direct to the task list
         $this->addFlash('error', "Vous n'pouvez pas accéder aux pages de gestion des utilisateurs ");
@@ -116,7 +123,7 @@ class UserController extends AbstractController
 
         }
 
-        return $this->render('user/edit.html.twig', ['form' => $form->createView(), 'user' => $user]);
+        return $this->render('user/create.html.twig', ['form' => $form->createView(), 'user' => $user]);
 
     }
 }

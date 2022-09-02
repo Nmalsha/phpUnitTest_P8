@@ -17,32 +17,40 @@ app.flashes('success') %}
   >
 </div>
 {% else %}
-<div class="row">
-  <table class="table">
-    <thead>
-      <tr>
-        <th>#</th>
-        <th>Nom d'utilisateur</th>
-        <th>Adresse d'utilisateur</th>
-        <th>Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      {% for user in users %}
-      <tr>
-        <th scope="row">{{ loop.index }}</th>
-        <td>{{ user.username }}</td>
-        <td>{{ user.email }}</td>
-        <td>
-          <a
-            href="{{ path('user_edit', { id: user.id }) }}"
-            class="btn btn-success btn-sm"
-            >Edit</a
-          >
-        </td>
-      </tr>
-      {% endfor %}
-    </tbody>
-  </table>
+<div class="container-fluid" style="width: 75%">
+  <div class="row text-center">
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th class="text-center">#</th>
+            <th class="text-center">Nom d'utilisateur</th>
+            <th class="text-center">Adresse d'utilisateur</th>
+            <th class="text-center">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for user in users %}
+          <tr>
+            <th scope="row">{{ loop.index }}</th>
+            <td>{{ user.username }}</td>
+            <td>{{ user.email }}</td>
+            <td>
+              <a
+                href="{{ path('user_edit', { id: user.id }) }}"
+                class="btn btn-success btn-sm"
+                >Edit</a
+              >
+            </td>
+          </tr>
+
+          {% endfor %}
+        </tbody>
+        {{
+          knp_pagination_render(users)
+        }}
+      </table>
+    </div>
+  </div>
 </div>
 {% endif %} {% endblock %}
