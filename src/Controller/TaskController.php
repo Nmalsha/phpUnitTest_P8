@@ -25,15 +25,13 @@ class TaskController extends AbstractController
         EntityManagerInterface $em,
         UserRepository $userRepository,
         CacheInterface $cache,
-        PaginatorInterface $paginator,
-        Request $request) {
+        PaginatorInterface $paginator) {
 
         $this->taskRepository = $taskRepository;
         $this->em = $em;
         $this->userRepository = $userRepository;
         $this->cache = $cache;
         $this->paginator = $paginator;
-        $this->request = $request;
 
     }
 
