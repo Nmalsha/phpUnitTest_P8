@@ -24,32 +24,33 @@ class TaskController extends AbstractController
     public function __construct(TaskRepository $taskRepository,
         EntityManagerInterface $em,
         UserRepository $userRepository,
-        CacheInterface $cache,
-        PaginatorInterface $paginator) {
+        CacheInterface $cache
+    ) {
 
         $this->taskRepository = $taskRepository;
         $this->em = $em;
         $this->userRepository = $userRepository;
         $this->cache = $cache;
-        $this->paginator = $paginator;
 
     }
 
     /**
      * @Route("/tasks", name="task_list")
      */
-    public function listAction()
+    public function listAction(Request $request, PaginatorInterface $paginator)
     {
-
         $tasks = $this->cache->get('task_list', function () {
             return $this->taskRepository->findBy(array(), array('isDone' => 'ASC', 'createdAt' => 'DESC'));
+
         });
-        // $taskpag = $this->paginator->paginate(
-        //     $tasks,
-        //     $this->request->query->getInt('page', 1),
-        //     6
-        // );
-        return $this->render('task/list.html.twig', ['tasks' => $tasks]);
+        // $listTasks = $this->taskRepository->findBy(array(), array('isDone' => 'ASC', 'createdAt' => 'DESC'));
+        $taskspag = $paginator->paginate(
+            $tasks,
+            $request->query->getInt('page', 1),
+            5
+        );
+
+        return $this->render('task/list.html.twig', ['tasks' => $taskspag]);
     }
     /**
      * @Route("/tasks/create", name="task_create")
@@ -187,4 +188,5 @@ class TaskController extends AbstractController
 
         return $this->redirectToRoute('task_list');
     }
+
 }

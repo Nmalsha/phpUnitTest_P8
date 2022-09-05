@@ -12,7 +12,7 @@ app.flashes('success') %}
   {{ message }}
 </div>
 {% endfor %}
-<div class="container w-auto">
+<div class="container w-auto" style="width: 75%; margin-top: 50px">
   <div class="row">
     {% if app.request.attributes.get('_route')=='user_create' %}
     {{ form_start(form, { action: path("user_create") }) }}
