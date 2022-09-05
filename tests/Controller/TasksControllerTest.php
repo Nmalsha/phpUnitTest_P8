@@ -69,7 +69,7 @@ class TasksControllerTest extends WebTestCase
         $user = $this->client->loginUser($this->user);
         $data = ["test-task", "test", "1"];
         // dd($data);
-        $form = $this->createTaskForm($user, $data);
+        $this->createTaskForm($user, $data);
         $this->client->request(Request::METHOD_GET, $this->urlGenerator->generate('user_list'));
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
@@ -82,7 +82,7 @@ class TasksControllerTest extends WebTestCase
      */
     public function testTaskEditWhenUserIsConnected(): void
     {
-        $user = $this->client->loginUser($this->user);
+        $this->client->loginUser($this->user);
         $TestTaskId = $this->taskRepository->findOneByTitle('test-task - modify');
         $crowler = $this->client->request('GET', '/tasks/' . $TestTaskId->getId() . '/edit');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
