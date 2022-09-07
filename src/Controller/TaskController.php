@@ -63,19 +63,16 @@ class TaskController extends AbstractController
         $this->cache->delete('isDone');
         $tasks = $this->cache->get('isDone', function () {
             return $this->taskRepository->findBy(['isDone' => "1"]);
-            // dd($this->taskRepository->findBy(['isDone' => "1"]));
-            // return $this->taskRepository->findBy($tasksTreated);
 
         });
-        // dd($tasks);
-        // $listTasks = $this->taskRepository->findBy(array(), array('isDone' => 'ASC', 'createdAt' => 'DESC'));
+
         $taskspag = $paginator->paginate(
             $tasks,
             $request->query->getInt('page', 1),
             5
         );
 
-        return $this->render('task/list.html.twig', ['tasks' => $taskspag]);
+        return $this->render('task/list.html.twig', ['tasks' => $taskspag, 'createdAt' => 'ASC']);
     }
 
     /**

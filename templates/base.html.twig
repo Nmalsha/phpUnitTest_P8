@@ -76,6 +76,19 @@
 >
           </li>
           
+          {# {% if app.user.roles[0] == "ROLE_ADMIN"
+         %}
+         <li class="nav-item">
+          <a href="{{ path('user_list') }}" class="nav-link active"
+>List users</a
+>
+        </li>
+        {% else %}
+        <a href="" class="nav-link active"
+        >List users</a
+        >
+                </li>
+        {% endif %} #}
         </ul>
       </nav>
   <body>
