@@ -45,7 +45,7 @@
       <div class="collapse navbar-collapse" id="navbarColor01">
         <ul class="navbar-nav me-auto">
           <li class="nav-item">
-            <a class="nav-link active" href="{{ path('homepage') }}"
+            <a class="nav-link active" href="{{ path('app_login') }}"
               ><i class="fas fa-home"></i>Home
               <span class="visually-hidden">(current)</span>
             </a>
@@ -68,27 +68,31 @@
           <li class="nav-item">
             <a href="{{ path('app_login') }}" class="nav-link active"
   >Login</a
->
+>  {% if  app.user %}
+{# <pre>
+  {{ dump() }}
+</pre>( app.user); #}
+
+<p class="nav-item" style="color: white;">
+  
+  Hi {{ app.user.userIdentifier }}</p> {% endif %}
           </li>
           <li class="nav-item">
             <a href="{{ path('app_logout') }}" class="nav-link active"
   >Logout</a
 >
           </li>
-          
-          {# {% if app.user.roles[0] == "ROLE_ADMIN"
+          {% if  app.user %}
+           {% if app.user.roles[0] == "ROLE_ADMIN"
          %}
          <li class="nav-item">
           <a href="{{ path('user_list') }}" class="nav-link active"
->List users</a
+>Gestion des utilisateurs</a
 >
         </li>
-        {% else %}
-        <a href="" class="nav-link active"
-        >List users</a
-        >
-                </li>
-        {% endif %} #}
+      
+        {% endif %} 
+        {% endif %} 
         </ul>
       </nav>
   <body>

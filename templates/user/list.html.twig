@@ -7,9 +7,8 @@ app.flashes('success') %}
 <div class="alert alert-warning">
   {{ message }}
 </div>
-{% endfor %}{% endblock %} {% block header_title %}
-<h1>Liste des utilisateurs</h1>
-{% endblock %} {% block body %} {% if users|length == 0 %}
+{% endfor %}{% endblock %} {% block header_title %} {% endblock %} {% block body
+%} {% if users|length == 0 %}
 <div class="alert alert-warning" role="alert">
   Il n'y a pas encore d'utilisateur enregistré.
   <a href="{{ path('user_create') }}" class="btn btn-warning pull-right"
@@ -18,6 +17,10 @@ app.flashes('success') %}
 </div>
 {% else %}
 <div class="container-fluid" style="width: 75%">
+  <a href="{{ path('user_create') }}" class="btn btn-info pull-right"
+    >Créer une utilisateur</a
+  >
+  <h3>List des utilisateur</h3>
   <div class="row text-center">
     <div class="table-responsive">
       <table class="table">
