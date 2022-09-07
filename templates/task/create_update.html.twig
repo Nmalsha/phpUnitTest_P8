@@ -14,6 +14,7 @@ in app.flashes('success') %}
 <div class="container w-auto" style="width: 75%; margin-top: 50px">
   <div class="row">
     {% if app.request.attributes.get('_route')=='task_create' %}
+    <h3>Créer une nouvelle tache</h3>
     {{ form_start(form, { action: path("task_create") }) }}
     {% elseif app.request.attributes.get('_route')=='task_edit' %}
     {{ form_start(form, { action: path("task_edit", { id: task.id }) }) }}

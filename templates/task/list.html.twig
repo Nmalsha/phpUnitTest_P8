@@ -10,12 +10,17 @@ block body %} {% for message in app.flashes('success') %}
 {% endfor %}
 
 <div class="container-fluid" style="width: 75%; margin-top: 50px">
+  {% if app.request.attributes.get('_route')=='task_list' %}
+  <h3>List des tache à faire</h3>
+  {% elseif app.request.attributes.get('_route')=='task_treated' %}
+  <h3>List des tache terminée</h3>
+  {% endif %}
   <a href="{{ path('task_create') }}" class="btn btn-info pull-right"
     >Créer une tâche</a
   >
   <div class="row">
     {% for task in tasks %}
-    <div class="col-sm-12 col-lg-12 col-md-12">
+    <div class="col-sm-12 col-lg-12 col-md-12" style="margin-top: 20px">
       {% if task.isDone == 1 %}
       <div class="thumbnail bg-success" style="--bs-bg-opacity: 0.25">
         {% else %}
@@ -75,8 +80,8 @@ block body %} {% for message in app.flashes('success') %}
       </div>
       {% endfor %}
     </div>
+    {{ knp_pagination_render(tasks) }}
   </div>
-  {{ knp_pagination_render(tasks) }}
 </div>
 
 {% endblock %}
