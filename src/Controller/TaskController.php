@@ -40,7 +40,8 @@ class TaskController extends AbstractController
     {
         $this->cache->delete('isDone');
         $tasks = $this->cache->get('isDone', function () {
-            return $this->taskRepository->findBy(['isDone' => "0"]);
+            // return $this->taskRepository->findBy(['isDone' => "0"]);
+            return $this->taskRepository->findBy(array('isDone' => '0'), array('createdAt' => 'DESC'));
             // return $this->taskRepository->findBy(array(), array('isDone' => 'ASC', 'createdAt' => 'DESC'));
 
         });
@@ -62,7 +63,7 @@ class TaskController extends AbstractController
     {
         $this->cache->delete('isDone');
         $tasks = $this->cache->get('isDone', function () {
-            return $this->taskRepository->findBy(['isDone' => "1"]);
+            return $this->taskRepository->findBy(array('isDone' => '1'), array('createdAt' => 'DESC'));
 
         });
 
@@ -72,7 +73,7 @@ class TaskController extends AbstractController
             5
         );
 
-        return $this->render('task/list.html.twig', ['tasks' => $taskspag, 'createdAt' => 'ASC']);
+        return $this->render('task/list.html.twig', ['tasks' => $taskspag]);
     }
 
     /**
