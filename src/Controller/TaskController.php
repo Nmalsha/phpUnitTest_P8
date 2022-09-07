@@ -19,7 +19,6 @@ class TaskController extends AbstractController
     private $userRepository;
     private $em;
     private $cache;
-    private $paginator;
 
     public function __construct(TaskRepository $taskRepository,
         EntityManagerInterface $em,
@@ -39,10 +38,13 @@ class TaskController extends AbstractController
      */
     public function listAction(Request $request, PaginatorInterface $paginator)
     {
-        $tasks = $this->cache->get('task_list', function () {
-            return $this->taskRepository->findBy(array(), array('isDone' => 'ASC', 'createdAt' => 'DESC'));
+        $this->cache->delete('isDone');
+        $tasks = $this->cache->get('isDone', function () {
+            return $this->taskRepository->findBy(['isDone' => "0"]);
+            // return $this->taskRepository->findBy(array(), array('isDone' => 'ASC', 'createdAt' => 'DESC'));
 
         });
+
         // $listTasks = $this->taskRepository->findBy(array(), array('isDone' => 'ASC', 'createdAt' => 'DESC'));
         $taskspag = $paginator->paginate(
             $tasks,
@@ -52,6 +54,30 @@ class TaskController extends AbstractController
 
         return $this->render('task/list.html.twig', ['tasks' => $taskspag]);
     }
+
+    /**
+     * @Route("/tasksdone", name="task_treated")
+     */
+    public function listTaskIsDone(Request $request, PaginatorInterface $paginator)
+    {
+        $this->cache->delete('isDone');
+        $tasks = $this->cache->get('isDone', function () {
+            return $this->taskRepository->findBy(['isDone' => "1"]);
+            // dd($this->taskRepository->findBy(['isDone' => "1"]));
+            // return $this->taskRepository->findBy($tasksTreated);
+
+        });
+        // dd($tasks);
+        // $listTasks = $this->taskRepository->findBy(array(), array('isDone' => 'ASC', 'createdAt' => 'DESC'));
+        $taskspag = $paginator->paginate(
+            $tasks,
+            $request->query->getInt('page', 1),
+            5
+        );
+
+        return $this->render('task/list.html.twig', ['tasks' => $taskspag]);
+    }
+
     /**
      * @Route("/tasks/create", name="task_create")
      */
@@ -74,7 +100,7 @@ class TaskController extends AbstractController
             $this->em->persist($task);
             $this->em->flush();
             //delete cache key
-            $this->cache->delete('task_list');
+            $this->cache->delete('isDone');
             $this->addFlash('success', 'La tâche a été bien été ajoutée à la liste.');
             return $this->redirectToRoute('task_list');
         }
@@ -106,7 +132,7 @@ class TaskController extends AbstractController
                 $this->em->flush();
 
                 //delete cache key
-                $this->cache->delete('task_list');
+                $this->cache->delete('isDone');
 
                 return $this->redirectToRoute('task_list');
             }
@@ -154,7 +180,7 @@ class TaskController extends AbstractController
             $this->em->flush();
 
             //delete cache key
-            $this->cache->delete('task_list');
+            $this->cache->delete('isDone');
 
             $this->addflash(
                 'success',
