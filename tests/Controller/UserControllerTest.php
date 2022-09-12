@@ -107,12 +107,13 @@ class UserControllerTest extends WebTestCase
     public function testEditUserWhenUserIsAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
-        $userTest = $this->userRepository->findOneByEmail('marcelle73edit@ifrance.com');
+        $userTest = $this->userRepository->findOneByEmail('marcelle73@ifrance.com');
+        // dd($userTest);
         $crowler = $this->client->request('GET', '/users/' . $userTest->getId() . '/edit');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
-        $form = $crowler->selectButton('modifier')->form();
-        $form['user[email]'] = 'marcelle73@ifrance.com';
+        $form = $crowler->selectButton('Modifier')->form();
+        $form['user[email]'] = 'marcelle73edit@ifrance.com';
         $form['user[roles]'] = 'ROLE_USER';
         $form['user[username]'] = 'TestuserModif';
         $form["user[password][first]"] = 'password';

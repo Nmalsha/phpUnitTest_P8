@@ -41,10 +41,10 @@
         php -S localhost:8000 -t public
 
 8.Test
-
-        vendor/bin/phpunit --filter=nome de fonction test
-         or
-        bin/phpunit --coverage-html chémas de votre repo local/raport
+test datafixture - php bin/console doctrine:fixtures:load --env=test
+vendor/bin/phpunit --filter=nome de fonction test
+or
+bin/phpunit --coverage-html chémas de votre repo local/raport
 
 Tester les requêtes avec un compte User
 
