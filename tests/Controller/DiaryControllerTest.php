@@ -25,7 +25,7 @@ class DiaryControllerTest extends WebTestCase
     }
 
     /**
-     * @covers DefaultController
+     * @covers \App\Controller\DefaultController
      */
 
     public function testHomepageIsUpWhenUserIsConnected()
@@ -36,7 +36,7 @@ class DiaryControllerTest extends WebTestCase
 
     }
     /**
-     * @covers DefaultController::index
+     * @covers \App\Controller\DefaultController::index
      */
 
     public function testHomepageIsUpWhenUserIsNotConnected()

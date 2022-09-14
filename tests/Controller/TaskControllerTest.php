@@ -8,7 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class TasksControllerTest extends WebTestCase
+class TaskControllerTest extends WebTestCase
 {
     public function setUp(): void
     {
@@ -25,7 +25,7 @@ class TasksControllerTest extends WebTestCase
     //check redirection of the page when user/admin click on create task
 
     /**
-     * @covers TaskController::listAction
+     * @covers \App\Controller\TaskController::listAction
      */
 
     public function testTaskListPageRedirectionIfAUserConnected(): void
@@ -37,7 +37,7 @@ class TasksControllerTest extends WebTestCase
     }
 
     /**
-     * @covers TaskController::listAction
+     * @covers \App\Controller\TaskController::listAction
      */
 
     public function testTaskListPageRedirectionIfAUserNotConnected(): void
@@ -51,7 +51,7 @@ class TasksControllerTest extends WebTestCase
     //check  create task
 
     /**
-     * @covers TaskController::createAction
+     * @covers \App\Controller\TaskController::createAction
      */
     public function testTaskCreateIfTheUserIsAdmin(): void
     {
@@ -78,7 +78,7 @@ class TasksControllerTest extends WebTestCase
     //check  edit task
 
     /**
-     * @covers TaskController::editTask
+     * @covers \App\Controller\TaskController::editTask
      */
     public function testTaskEditWhenUserIsConnected(): void
     {
@@ -103,7 +103,7 @@ class TasksControllerTest extends WebTestCase
     //check  delete task
 
     /**
-     * @covers TaskController::deleteTask
+     * @covers \App\Controller\TaskController::deleteTask
      */
     public function testTaskDeleteWhenUserIsConnected(): void
     {

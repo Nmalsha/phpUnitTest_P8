@@ -20,7 +20,7 @@ class SecurityControllerTest extends WebTestCase
     }
 
     /**
-     * @covers TaskController::login
+     * @covers \App\Controller\SecurityController::login
      */
 
     public function testConnexionWithBadCredentials(): void
