@@ -22,7 +22,7 @@ class UserControllerTest extends WebTestCase
     //check redirection of the page when login depending the role of the user
 
     /**
-     * @covers UserController::listAction
+     * @covers \App\Controller\UserController::listAction
      */
 
     public function testUserPageRedirectWhenUserIsNotAdmin(): void
@@ -33,7 +33,7 @@ class UserControllerTest extends WebTestCase
     }
 
     /**
-     * @covers UserController::listAction
+     * @covers \App\Controller\UserController::listAction
      */
 
     public function testUserPageRedirectWhenUserIsAdmin(): void
@@ -46,7 +46,7 @@ class UserControllerTest extends WebTestCase
 //check redirection of user create depending the role of the user
 
     /**
-     * @covers UserController::createAction
+     * @covers \App\Controller\UserController::createAction
      */
 
     public function testCreateUserPageRedirectWhenUserIsNotAdmin(): void
@@ -57,7 +57,7 @@ class UserControllerTest extends WebTestCase
     }
 
     /**
-     * @covers UserController::createAction
+     * @covers \App\Controller\UserController::createAction
      */
 
     public function testCreateUserPageRedirectWhenUserIsAdmin(): void
@@ -69,7 +69,7 @@ class UserControllerTest extends WebTestCase
 
 //check user create
     /**
-     * @covers UserController::createAction
+     * @covers \App\Controller\UserController::createAction
      */
 
     public function testCreateUserWhenUserIsAdmin(): void
@@ -88,7 +88,7 @@ class UserControllerTest extends WebTestCase
 //check redirection of user edit depending the role of the user
 
     /**
-     * @covers UserController::editAction
+     * @covers \App\Controller\UserController::editAction
      */
 
     public function testEditUserPageRedirectWhenUserIsNotAdmin(): void
@@ -101,19 +101,19 @@ class UserControllerTest extends WebTestCase
 
 //check user edit
     /**
-     * @covers UserController::editAction
+     * @covers \App\Controller\UserController::editAction
      */
 
     public function testEditUserWhenUserIsAdmin(): void
     {
         $this->client->loginUser($this->adminUser);
-        $userTest = $this->userRepository->findOneByEmail('marcelle73@ifrance.com');
+        $userTest = $this->userRepository->findOneByEmail('marcelle73edit@ifrance.com');
         // dd($userTest);
         $crowler = $this->client->request('GET', '/users/' . $userTest->getId() . '/edit');
         $this->assertResponseStatusCodeSame(Response::HTTP_OK);
 
         $form = $crowler->selectButton('Modifier')->form();
-        $form['user[email]'] = 'marcelle73edit@ifrance.com';
+        $form['user[email]'] = 'marcelle73@ifrance.com';
         $form['user[roles]'] = 'ROLE_USER';
         $form['user[username]'] = 'TestuserModif';
         $form["user[password][first]"] = 'password';
