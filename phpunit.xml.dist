@@ -25,6 +25,17 @@
    
     </php>
 
+<!-- <phpunit>
+  <filter>
+    <whitelist>
+      <directory suffix=".php">../</directory>
+      <exclude>
+       
+        <directory suffix=".php">/src/DataFixtures</directory>
+      </exclude>
+    </whitelist>
+  </filter>
+</phpunit> -->
 
     <testsuites>
         <testsuite name="Project Test Suite">
@@ -36,6 +47,9 @@
         <include>
             <directory suffix=".php">src</directory>
         </include>
+          <exclude>
+            <directory suffix=".php">src/DataFixtures</directory>
+        </exclude>
     </coverage>
 
     <listeners>
@@ -46,6 +60,7 @@
 <extension class="DAMA\DoctrineTestBundle\PHPUnit\PHPUnitExtension"/>
 
 </extensions>
+
     <!-- Run `composer require symfony/panther` before enabling this extension -->
     <!--
     <extensions>
