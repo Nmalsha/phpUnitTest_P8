@@ -21,7 +21,14 @@ class UserTest extends WebTestCase
             ->setPassword('testEntityUser')
             ->setRoles(['ROLE_USER']);
 
-        $this->task = new Task;
+        $this->task = new Task();
+        $this->date = new \DateTimeImmutable();
+        $this->task->setUser($this->user)
+            ->setTitle('testTaskTitle')
+            ->setContent('testTaskContent')
+            ->setIsDone(1)
+            ->setCreatedAt($this->date);
+
     }
 
     public function testGetIsTrue(): void
@@ -32,7 +39,14 @@ class UserTest extends WebTestCase
         $this->assertTrue('testEntityUser' === $this->user->getPassword());
         $this->assertTrue(['ROLE_USER'] === $this->user->getRoles());
 
+        $this->task = new Task();
+        $this->user = new User;
+
+        $this->user->addTask($this->task);
+        $this->user->removeTask($this->task);
+
     }
+
     public function testGetIsFalse(): void
     {
 
@@ -54,5 +68,11 @@ class UserTest extends WebTestCase
         $this->assertEmpty($user->getTask());
         $this->assertEmpty($user->getRoles());
     }
+    // public function testAddTask(): void
+    // {
+    //     $user = new User;
+    //     $task = new Task;
+    //     $this->user->addTask();
+    // }
 
 }
